@@ -7,6 +7,7 @@ export const getTodos = () => {
   const currentTemplate = getCurrentTemplate();
 
   const todos = JSON.parse(localStorage.getItem(currentTemplate));
+
   return todos;
 };
 export const setTodos = (todoList) => {
@@ -21,7 +22,6 @@ export const CreateTodo = (values) => {
   if (validValues.success === false) return { error: "Campos Inválidos" };
 
   let todos = getTodos() || [];
-  console.log(todos);
   const newTodo = { title, description, checkState: false, id: uuidv4() };
   todos.push(newTodo);
   setTodos(todos);
@@ -43,11 +43,9 @@ export const changeCheckState = (id, state) => {
 };
 
 export const editTodo = (values, id) => {
-  console.log(values, id);
   const todos = getTodos();
   const newTodos = todos.map((todo) => {
     if (todo.id === id) {
-      console.log(todo);
       return { ...todo, title: values.title, description: values.description };
     }
     return todo;

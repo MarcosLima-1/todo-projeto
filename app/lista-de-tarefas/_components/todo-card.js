@@ -29,6 +29,8 @@ import { formSchema } from "@/schemas/zod/zod-schemas";
 export const TodoCard = ({ title, description, id, checkState }) => {
   const [checkValue, setCheckValue] = useState(checkState);
   const [todoId, setTodoId] = useState(0);
+  const [isPending, startTransition] = useTransition();
+
   const checkbox = (values) => {
     if (values) {
       setCheckValue(true);
@@ -38,9 +40,6 @@ export const TodoCard = ({ title, description, id, checkState }) => {
     setCheckValue(false);
     changeCheckState(id, false);
   };
-
-  const [isPending, startTransition] = useTransition();
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,10 +53,11 @@ export const TodoCard = ({ title, description, id, checkState }) => {
       editTodo(values, todoId);
     });
   }
+
   return (
     <label
       htmlFor={id}
-      className={`relative border shadow-md rounded-lg flex gap-5 mt-5 items-center justify-between p-4 cursor-pointer w-[600px] max-h-[100px]${
+      className={`relative border shadow-md rounded-lg flex gap-5 mt-5 items-center justify-between p-4 cursor-pointer w-full max-w-[600px] max-h-[100px]${
         checkValue ? " bg-slate-300 tex" : " bg-slate-100"
       }`}
     >
@@ -152,7 +152,7 @@ export const TodoCard = ({ title, description, id, checkState }) => {
                 />
               </div>
               <Button onClick={() => setTodoId(id)} disabled={isPending} type="submit">
-                Criar
+                Atualizar
               </Button>
             </form>
           </Form>

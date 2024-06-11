@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useTransition } from "react";
 import { CreateTodo } from "@/actions/todos";
-
 import {
   Dialog,
   DialogContent,
@@ -16,11 +15,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { setCurrentTemplate } from "@/actions/templates";
 
 const TodoForm = () => {
   const [isPending, startTransition] = useTransition();
-  // if (!localStorage.getItem("to-dos")) {setCurrentTemplate("to-dos");}
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,9 +34,8 @@ const TodoForm = () => {
   }
   return (
     <Dialog>
-      <h1 className="font-bold font text-3xl text-white">Crie seu Todo Aqui</h1>
-      <DialogTrigger className="h-9 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90">
-        Criar
+      <DialogTrigger className="border text-xl z-10 fixed right-2 bottom-2 rounded-full  h-9 w-9 px-4 py-2 inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90">
+        +
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

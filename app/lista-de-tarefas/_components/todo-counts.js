@@ -1,7 +1,3 @@
-"use client";
-import { getTodos } from "@/actions/todos";
-import { useState } from "react";
-
 export const MiniCard = ({ name, number }) => {
   return (
     <div className="flex h-[32px]">
@@ -13,24 +9,18 @@ export const MiniCard = ({ name, number }) => {
   );
 };
 
-const TodoCounts = () => {
-  const [todos, setTodos] = useState([]);
-  setInterval(() => {
-    const localTodos = getTodos();
-    setTodos(localTodos);
-  }, 1000);
-
+const TodoCounts = ({ todos }) => {
   return (
     <div className="flex gap-4">
       <MiniCard
         name="Restantes"
-        number={todos?.filter((todo) => todo.checkState !== true).length}
+        number={todos?.filter((todo) => todo.checkState !== true).length || 0}
       />
       <MiniCard
         name="Completos"
-        number={todos?.filter((todo) => todo.checkState !== false).length}
+        number={todos?.filter((todo) => todo.checkState !== false).length || 0}
       />
-      <MiniCard name="Total" number={todos?.length} />
+      <MiniCard name="Total" number={todos?.length || 0} />
     </div>
   );
 };
