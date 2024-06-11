@@ -69,7 +69,7 @@ export const TodoCard = ({ title, description, id, checkState }) => {
       />
       <div className="w-[90%]">
         <h1
-          className={`font-extrabold text-xl ${
+          className={`font-extrabold text-xl max-md:text-lg ${
             checkValue ? "line-through text-secondary-foreground" : "text-primary"
           }`}
         >

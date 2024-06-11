@@ -3,7 +3,7 @@ import { TodoCard } from "@/app/lista-de-tarefas/_components/todo-card";
 const TodoList = ({ todos }) => {
   return (
     <section>
-      <div className="flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen flex flex-col items-center justify-start p-4">
         {todos?.map((e) => (
           <TodoCard
             key={e.id}

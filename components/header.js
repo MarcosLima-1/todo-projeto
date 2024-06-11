@@ -57,7 +57,7 @@ const Header = () => {
   return (
     <header className=" shadow-md z-20 top-0 fixed w-full bg-white h-16 border-b-2">
       <div className=" w-[90%] h-full mx-auto flex justify-between items-center">
-        <a href="/" className="w-fit font-extrabold text-xl">
+        <a href="/" className="w-fit font-extrabold text-xl max-sm:text-sm">
           LifeManager
         </a>
         <NavigationMenu>
