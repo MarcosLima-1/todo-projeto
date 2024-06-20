@@ -14,9 +14,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
-const TodoForm = () => {
+const TodoForm = ({ todoUpdate }) => {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm({
@@ -29,7 +31,16 @@ const TodoForm = () => {
 
   function onSubmit(values) {
     startTransition(() => {
-      CreateTodo(values);
+      const result = CreateTodo(values);
+      if (result.success) {
+        toast(result.success);
+        todoUpdate();
+        return;
+      }
+      if (result.error) {
+        toast(result.error);
+        return;
+      }
     });
   }
   return (
@@ -82,9 +93,11 @@ const TodoForm = () => {
                   )}
                 />
               </div>
-              <Button disabled={isPending} type="submit">
-                Criar
-              </Button>
+              <DialogClose asChild>
+                <Button disabled={isPending} type="submit">
+                  Criar
+                </Button>
+              </DialogClose>
             </form>
           </Form>
         </section>

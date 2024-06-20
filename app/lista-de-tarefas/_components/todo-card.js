@@ -15,6 +15,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -26,7 +27,8 @@ import { Input } from "@/components/ui/input";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { formSchema } from "@/schemas/zod/zod-schemas";
-export const TodoCard = ({ title, description, id, checkState }) => {
+import { toast } from "sonner";
+export const TodoCard = ({ title, description, id, checkState, todoUpdate, ...props }) => {
   const [checkValue, setCheckValue] = useState(checkState);
   const [todoId, setTodoId] = useState(0);
   const [isPending, startTransition] = useTransition();
@@ -35,10 +37,12 @@ export const TodoCard = ({ title, description, id, checkState }) => {
     if (values) {
       setCheckValue(true);
       changeCheckState(id, true);
+      todoUpdate();
       return;
     }
     setCheckValue(false);
     changeCheckState(id, false);
+    todoUpdate();
   };
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -51,13 +55,15 @@ export const TodoCard = ({ title, description, id, checkState }) => {
   function onSubmit(values) {
     startTransition(() => {
       editTodo(values, todoId);
+      todoUpdate();
     });
   }
 
   return (
     <label
+      {...props}
       htmlFor={id}
-      className={`relative border shadow-md rounded-lg flex gap-5 mt-5 items-center justify-between p-4 cursor-pointer w-full max-w-[600px] max-h-[100px]${
+      className={`relative border shadow-md rounded-lg flex gap-5 items-center justify-between p-4 cursor-pointer w-full max-w-[600px] max-h-[100px]${
         checkValue ? " bg-slate-300 tex" : " bg-slate-100"
       }`}
     >
@@ -99,6 +105,8 @@ export const TodoCard = ({ title, description, id, checkState }) => {
             <DropdownMenuItem
               onClick={() => {
                 deleteTodo(id);
+                toast("Tarefa apagada");
+                todoUpdate();
               }}
               className="cursor-pointer text-destructive"
             >
@@ -151,9 +159,18 @@ export const TodoCard = ({ title, description, id, checkState }) => {
                   )}
                 />
               </div>
-              <Button onClick={() => setTodoId(id)} disabled={isPending} type="submit">
-                Atualizar
-              </Button>
+              <DialogClose asChild>
+                <Button
+                  onClick={() => {
+                    todoUpdate();
+                    setTodoId(id);
+                  }}
+                  disabled={isPending}
+                  type="submit"
+                >
+                  Atualizar
+                </Button>
+              </DialogClose>
             </form>
           </Form>
         </DialogContent>

@@ -104,7 +104,7 @@ const HomePage = () => {
       <section>
         <div className="flex flex-col w-[90%] h-[300px] gap-10 mx-auto items-center justify-center">
           <div className=" rounded-lg justify-around flex gap-5 items-center bg-slate-900 w-[100%] h-28 p-7">
-            <h1 className="text-3xl max-md:text-sm font-semibold text-white ">
+            <h1 className="text-3xl max-md:text-sm font-semibold text-white">
               Dê o Próximo Passo para uma Vida Organizada
             </h1>
             <Button asChild variant="outline">

@@ -1,6 +1,6 @@
 "use client";
 import { v4 as uuidv4 } from "uuid";
-import { editTodo } from "./todos";
+
 export const getAllTemplates = () => {
   const allTemplate = JSON.parse(localStorage.getItem("all-template"));
   return allTemplate;
@@ -16,6 +16,7 @@ export const addTemplate = (values) => {
   const template = { name: name, id: uuidv4() };
   allTemplate.push(template);
   localStorage.setItem("all-template", JSON.stringify(allTemplate));
+  localStorage.setItem(name, JSON.stringify([]));
   return { success: "Template Criado" };
 };
 
@@ -42,7 +43,6 @@ export const selectCurrentTemplate = (currentTemplate) => {
 };
 
 export const editTemplate = (values) => {
-  console.log(values);
   const { oldName, id, name } = values;
 
   const allTemplates = getAllTemplates();
@@ -59,12 +59,14 @@ export const editTemplate = (values) => {
     return template;
   });
 
-  const oldTemplateData = localStorage.getItem(oldName) || [];
+  const oldTemplateData = localStorage.getItem(oldName);
 
   localStorage.setItem("all-template", JSON.stringify(newTemplate));
   localStorage.setItem(name, oldTemplateData);
   localStorage.removeItem(oldName);
+
   if (currentTemplate === oldName) {
     selectCurrentTemplate(name);
   }
+  return { success: "Template atualizado" };
 };

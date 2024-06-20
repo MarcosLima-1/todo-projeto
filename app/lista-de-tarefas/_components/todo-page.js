@@ -17,37 +17,58 @@ export default function TodoPageComponent() {
   const [todos, setTodos] = useState([]);
   const [allTemplates, setAllTemplates] = useState([]);
   const [currentTemplate, setCurrentTemplate] = useState("");
-  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1e3);
-    const current = getCurrentTemplate() || false;
-    const todo = getTodos() || [];
-    const allTemplate = getAllTemplates() || [];
-    if (current !== currentTemplate) {
-      setCurrentTemplate(current);
-      console.log("mudou o template");
-    }
-
-    setAllTemplates(allTemplate);
+  const templateChanged = () => {
+    const current = getCurrentTemplate();
+    const todo = getTodos();
+    setCurrentTemplate(current);
     setTodos(todo);
-    return () => clearTimeout(timer);
-  }, [count, currentTemplate, allTemplates.length, todos.length]);
+  };
+
+  const templateUpdate = () => {
+    const allTemplate = getAllTemplates() || [];
+    setAllTemplates(allTemplate);
+  };
+
+  const todoUpdate = () => {
+    const todo = getTodos() || [];
+    setTodos(todo);
+  };
 
   useEffect(() => {
+    const current = getCurrentTemplate() || "";
     const allTemplate = getAllTemplates() || [];
     const home = allTemplate.find((e) => e.name === "Home");
     if (!home) {
       addTemplate({ name: "Home" });
       selectCurrentTemplate("Home");
-      console.log("default created");
     }
-  }, [allTemplates]);
+    if (!current) {
+      selectCurrentTemplate("Home");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!currentTemplate) {
+      const current = getCurrentTemplate();
+      const todo = getTodos() || [];
+      const allTemplate = getAllTemplates() || [];
+      setAllTemplates(allTemplate);
+      setCurrentTemplate(current);
+      setTodos(todo);
+    }
+  }, [currentTemplate]);
+
   return (
     <div className="relative flex w-full max-sm:flex-col">
       <div>
-        <TodoForm />
-        <SideBar allTemplates={allTemplates} currentTemplate={currentTemplate} />
+        <TodoForm todoUpdate={todoUpdate} />
+        <SideBar
+          allTemplates={allTemplates}
+          currentTemplate={currentTemplate}
+          templateUpdate={templateUpdate}
+          templateChanged={templateChanged}
+        />
       </div>
       <div className="w-full">
         <div className="flex h-[150px] bg-slate-700 justify-center items-center">
@@ -56,7 +77,7 @@ export default function TodoPageComponent() {
             <TodoCounts todos={todos} />
           </div>
         </div>
-        <TodoList todos={todos} />
+        <TodoList todos={todos} todoUpdate={todoUpdate} />
       </div>
     </div>
   );

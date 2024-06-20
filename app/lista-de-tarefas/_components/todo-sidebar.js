@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { templateSchema } from "@/schemas/zod/zod-schemas";
@@ -29,8 +30,19 @@ import {
 import { FaRegTrashAlt } from "react-icons/fa";
 import { GoPencil } from "react-icons/go";
 import { useState } from "react";
-import { IoIosAdd } from "react-icons/io";
-const ToggleButton = ({ template, value, checked = false, label, editable, id, newName }) => {
+import { toast } from "sonner";
+
+const ToggleButton = ({
+  template,
+  value,
+  checked = false,
+  label,
+  editable,
+  id,
+  newName,
+  templateChanged,
+  templateUpdate,
+}) => {
   const [isPending, startTransition] = useTransition();
   const [oldName, setOldName] = useState("");
   const [templateId, setTemplateId] = useState("");
@@ -46,7 +58,16 @@ const ToggleButton = ({ template, value, checked = false, label, editable, id, n
     startTransition(() => {
       values.oldName = oldName;
       values.id = templateId;
-      editTemplate(values);
+      const result = editTemplate(values);
+
+      if (result?.success) {
+        templateChanged();
+        templateUpdate();
+        toast(result.success);
+      }
+      if (result?.error) {
+        toast(result.error);
+      }
     });
   }
   return (
@@ -56,6 +77,7 @@ const ToggleButton = ({ template, value, checked = false, label, editable, id, n
           <Button
             onClick={() => {
               selectCurrentTemplate(template);
+              templateChanged();
             }}
             className={`w-full ${checked ? "bg-white text-black hover:bg-emerald-100" : ""}`}
             value={value}
@@ -78,7 +100,12 @@ const ToggleButton = ({ template, value, checked = false, label, editable, id, n
                 </ContextMenuItem>
               </DialogTrigger>
               <ContextMenuItem
-                onClick={() => deleteTemplate({ value, id, newName })}
+                onClick={() => {
+                  deleteTemplate({ value, id, newName });
+                  templateChanged();
+                  templateUpdate();
+                  toast("Template Removida");
+                }}
                 className=" bg-destructive-foreground text-destructive shadow-sm hover:bg-destructive-foreground/90 "
               >
                 <FaRegTrashAlt />
@@ -113,16 +140,19 @@ const ToggleButton = ({ template, value, checked = false, label, editable, id, n
                   )}
                 />
               </div>
-              <Button
-                onClick={() => {
-                  setTemplateId(id);
-                  setOldName(value);
-                }}
-                disabled={isPending}
-                type="submit"
-              >
-                Atualizar
-              </Button>
+              <DialogClose asChild>
+                <Button
+                  onClick={() => {
+                    setTemplateId(id);
+                    setOldName(value);
+                    templateUpdate();
+                  }}
+                  disabled={isPending}
+                  type="submit"
+                >
+                  Atualizar
+                </Button>
+              </DialogClose>
             </form>
           </Form>
         </DialogContent>
@@ -131,7 +161,7 @@ const ToggleButton = ({ template, value, checked = false, label, editable, id, n
   );
 };
 
-export const SideBar = ({ allTemplates, currentTemplate }) => {
+export const SideBar = ({ allTemplates, currentTemplate, templateUpdate, templateChanged }) => {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm({
@@ -143,7 +173,14 @@ export const SideBar = ({ allTemplates, currentTemplate }) => {
 
   function onSubmit(values) {
     startTransition(() => {
-      addTemplate(values);
+      const result = addTemplate(values);
+      if (result?.success) {
+        templateUpdate();
+        toast(result.success);
+      }
+      if (result?.error) {
+        toast(result.error);
+      }
     });
   }
 
@@ -152,6 +189,8 @@ export const SideBar = ({ allTemplates, currentTemplate }) => {
       <div className="flex sm:flex-col gap-1 items-center justify-start w-fit" type="single">
         {allTemplates?.map((e, length) => (
           <ToggleButton
+            templateChanged={templateChanged}
+            templateUpdate={templateUpdate}
             key={length}
             value={e.name}
             label={e.name.charAt(0).toUpperCase()}
@@ -193,9 +232,11 @@ export const SideBar = ({ allTemplates, currentTemplate }) => {
                   )}
                 />
               </div>
-              <Button disabled={isPending} type="submit">
-                Criar
-              </Button>
+              <DialogClose asChild>
+                <Button disabled={isPending} type="submit">
+                  Criar
+                </Button>
+              </DialogClose>
             </form>
           </Form>
         </DialogContent>
