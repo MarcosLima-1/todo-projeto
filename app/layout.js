@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${inter.className}`}>
         <Header />
-        <main className="mt-16">{children}</main>
+        <main className="mt-[112px]">{children}</main>
         <Toaster className="z-50" />
         <Footer />
       </body>

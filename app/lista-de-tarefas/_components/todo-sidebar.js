@@ -114,6 +114,7 @@ const ToggleButton = ({
             </>
           )}
         </ContextMenuContent>
+
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Editando Card: {value}</DialogTitle>
